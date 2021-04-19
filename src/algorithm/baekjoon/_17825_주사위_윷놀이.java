@@ -5,8 +5,9 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
-// 11:51~2:20 ¿À´ä
-public class _17825_ÁÖ»çÀ§_À·³îÀÌ {
+// 11:51~2:20 ì˜¤ë‹µ
+// 2ì°¨í’€ì´ ... ì„±ê³µ!!
+public class _17825_ì£¼ì‚¬ìœ„_ìœ·ë†€ì´ {
 
 //	private static int[] originMap = { 0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40 };
 //	private static int[] map5 = { 0,0,0,0,0,0, 13, 16, 19, 25, 30, 35, 40 };
@@ -39,10 +40,10 @@ public class _17825_ÁÖ»çÀ§_À·³îÀÌ {
 	}
 
 	private static void game(int stage) {
-		System.out.println(stage==10?"last":cmd[stage]);
-		System.out.println(Arrays.toString(unitCurIdx));
-		System.out.println(Arrays.toString(sum));
-		if (stage == 10 || allFinish()) { // stage ³¡
+//		System.out.println(stage==10?"last":cmd[stage]);
+//		System.out.println(Arrays.toString(unitCurIdx));
+//		System.out.println(Arrays.toString(sum));
+		if (stage == 10 || allFinish()) { // stage ë
 			int s = 0;
 			for (int i = 0; i < 4; i++) {
 				s += sum[i];
@@ -53,39 +54,48 @@ public class _17825_ÁÖ»çÀ§_À·³îÀÌ {
 
 		loop: for (int num = 0; num < 4; num++) {
 			if (finish[num])
-				continue; // ÀÌ¹Ì µµÂøÇÑ ¸»ÀÌ¸é »ı·«
+				continue; // ì´ë¯¸ ë„ì°©í•œ ë§ì´ë©´ ìƒëµ
 
-			// °¡¾ßÇÒ ¹æÇâ Á¤ÇÏ±â
+			// ê°€ì•¼í•  ë°©í–¥ ì •í•˜ê¸°
 			int dir = unitStartIdx[num];
-			unitCurIdx[num] += cmd[stage]; // ¸» ÀÌµ¿
+			unitCurIdx[num] += cmd[stage]; // ë§ ì´ë™
 
-			// dirº°·Î µµÂøÁöÁ¡ µµÂø¿©ºÎ ÆÄ¾Ç
+			// dirë³„ë¡œ ë„ì°©ì§€ì  ë„ì°©ì—¬ë¶€ íŒŒì•…
 			if (isGoal(dir, unitCurIdx[num])) {
-				// µµÂøÇß´Ù¸é
+				// ë„ì°©í–ˆë‹¤ë©´
 				finish[num] = true;
-//				sum[num] += 40;
 				game(stage + 1);
-//				sum[num] -= 40;
 				finish[num] = false;
-				unitCurIdx[num] -= cmd[stage]; // ¸» ÀÌµ¿ Ãë¼Ò
+				unitCurIdx[num] -= cmd[stage]; // ë§ ì´ë™ ì·¨ì†Œ
 				continue;
 			}
 
-			// ÀÌ¹Ì ¸»ÀÌ ÀÖ´Â °÷¿¡ ÀÌµ¿ÇÏ·Á ÇÏ´ÂÁö È®ÀÎ
+			// ì´ë¯¸ ë§ì´ ìˆëŠ” ê³³ì— ì´ë™í•˜ë ¤ í•˜ëŠ”ì§€ í™•ì¸
 			for (int i = 0; i < 4; i++) {
-				if (i == num) // ÀÚ±â ÀÚ½ÅÀº Á¦¿Ü
+				if (i == num) // ìê¸° ìì‹ ì€ ì œì™¸
 					continue;
-				if (unitCurIdx[i] == unitCurIdx[num] && !finish[i]) {
-					// ÀÌ¹Ì ¸»ÀÌ ÀÖ´Â °÷¿¡ ÀÌµ¿ÇÏ·Á ÇßÀ¸´Ï ÀÌµ¿Ãë¼Ò
-					unitCurIdx[num] -= cmd[stage];
-					continue loop;
+				// ì´ë¯¸ ë§ì´ ìˆëŠ” ê³³ì¸ì§€ í™•ì¸
+				// ì´ë¯¸ ë§ì´ ìˆëŠ” ê³³ì— ì´ë™í•˜ë ¤ í–ˆìœ¼ë‹ˆ ì´ë™ì·¨ì†Œ
+				if (unitStartIdx[i] == unitStartIdx[num]) { // ê°™ì€ ê²½ë¡œì´ê³  curidxê°™ìœ¼ë©´ ê²¹ì¹˜ëŠ” ê²½ìš°ì„
+					if (unitCurIdx[i] == unitCurIdx[num]) {
+						unitCurIdx[num] -= cmd[stage];
+						continue loop;
+					}
+				} else { // ë‹¤ë¥¸ê²½ë¡œë¼ë©´ ê²½ë¡œë³„ë¡œ íŠ¹ì • idx ì´ìƒë§Œ í™•ì¸í•˜ë©´ ë¨
+					// 5,10,15ì¼ë•Œ ì•ì—ì„œ ì´ë¯¸ startIdxë¥¼ ë°”ê¾¸ì–´ ì¤¬ìœ¼ë¯€ë¡œ 5,10,15ì˜ ë¶„ê¸°ëŠ” ë”°ë¡œ ì‹ ê²½ì¨ì¤˜ì•¼í•¨
+					int idxNum = matchIdx(unitStartIdx[num], unitCurIdx[num]);
+					int idxI = matchIdx(unitStartIdx[i], unitCurIdx[i]);
+					if (idxI > 0 && idxNum > 0 && idxI == idxNum) {
+						unitCurIdx[num] -= cmd[stage];
+						continue loop;
+					}
 				}
 			}
 
-			// ¾ÆÁ÷ µµÂøÇÏÁö ¸øÇß´Ù¸é
-			sum[num] += map[dir][unitCurIdx[num]]; // Á¡¼ö´©Àû
-			if (unitStartIdx[num] == 0) { // ¹æÇâ ÀüÈ¯ ÇÑ Àû ¾øÀ½
-				if (unitCurIdx[num] == 5) { // ´ÙÀ½¿¡ÆÄ¶õ¹æÇâÀ¸·Î °¡¾ßÇÏ´Â°Í Ç¥½Ã
+			// ì•„ì§ ë„ì°©í•˜ì§€ ëª»í–ˆë‹¤ë©´
+			sum[num] += map[dir][unitCurIdx[num]]; // ì ìˆ˜ëˆ„ì 
+			if (unitStartIdx[num] == 0) { // ë°©í–¥ ì „í™˜ í•œ ì  ì—†ìŒ
+				if (unitCurIdx[num] == 5) { // ë‹¤ìŒì—íŒŒë€ë°©í–¥ìœ¼ë¡œ ê°€ì•¼í•˜ëŠ”ê²ƒ í‘œì‹œ
 					unitStartIdx[num] = 1;
 				} else if (unitCurIdx[num] == 10) {
 					unitStartIdx[num] = 2;
@@ -94,8 +104,8 @@ public class _17825_ÁÖ»çÀ§_À·³îÀÌ {
 				}
 			}
 			game(stage + 1);
-			if (unitStartIdx[num] != 0) { // ¹æÇâ ÀüÈ¯ ÇÑ Àû ÀÖÀ½ .. Á» ¾Ö¸ÅÇÔ
-				if (unitCurIdx[num] == 5) { // ´ÙÀ½¿¡ÆÄ¶õ¹æÇâÀ¸·Î °¡¾ßÇß´ø°Í Ãë¼Ò
+			if (unitStartIdx[num] != 0) { // ë°©í–¥ ì „í™˜ í•œ ì  ìˆìŒ .. ì¢€ ì• ë§¤í•¨
+				if (unitCurIdx[num] == 5) { // ë‹¤ìŒì—íŒŒë€ë°©í–¥ìœ¼ë¡œ ê°€ì•¼í–ˆë˜ê²ƒ ì·¨ì†Œ
 					unitStartIdx[num] = unitStartIdx[num] == 1 ? 0 : unitStartIdx[num];
 				} else if (unitCurIdx[num] == 10) {
 					unitStartIdx[num] = unitStartIdx[num] == 2 ? 0 : unitStartIdx[num];
@@ -103,10 +113,46 @@ public class _17825_ÁÖ»çÀ§_À·³îÀÌ {
 					unitStartIdx[num] = unitStartIdx[num] == 3 ? 0 : unitStartIdx[num];
 				}
 			}
-			sum[num] -= map[dir][unitCurIdx[num]]; // À¯´Öº° ´©ÀûµÈ Á¡¼ö
-			unitCurIdx[num] -= cmd[stage]; // ¸» ÀÌµ¿ Ãë¼Ò
+			sum[num] -= map[dir][unitCurIdx[num]]; // ìœ ë‹›ë³„ ëˆ„ì ëœ ì ìˆ˜
+			unitCurIdx[num] -= cmd[stage]; // ë§ ì´ë™ ì·¨ì†Œ
 
 		}
+	}
+
+	private static int matchIdx(int startIdx, int curIdx) {
+		switch (startIdx) {
+		case 0:
+			if (curIdx == 20)
+				return 22;
+//			else
+//				return curIdx;
+			else if(curIdx==5) return 5;
+			else if(curIdx==10) return 10;
+			else if(curIdx==15) return 15;
+			else return -1;
+		case 1:
+			if (curIdx == 5)
+				return curIdx;
+			if (curIdx < 9)
+				return -1;
+			else
+				return curIdx + 10;
+		case 2:
+			if (curIdx == 10)
+				return curIdx;
+			if (curIdx < 13)
+				return -1;
+			else
+				return curIdx + 6;
+		case 3:
+			if (curIdx == 15)
+				return curIdx;
+			if (curIdx < 19)
+				return -1;
+			else
+				return curIdx;
+		}
+		return curIdx;
 	}
 
 	private static boolean allFinish() {
