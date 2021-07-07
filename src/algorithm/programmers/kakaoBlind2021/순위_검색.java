@@ -3,97 +3,79 @@ package algorithm.programmers.kakaoBlind2021;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.StringTokenizer;
 
 public class 순위_검색 {
-
-    private class Info{
-        int lang;
-        int job;
-        int career;
-        int food;
-        int score;
-
-        public Info(int lang, int job, int career, int food, int score) {
-            this.lang = lang;
-            this.job = job;
-            this.career = career;
-            this.food = food;
-            this.score = score;
-        }
-    }
+	private static HashMap<String, List<Integer>> map;
 
     public int[] solution(String[] info, String[] query) {
-        List<Info> list = new ArrayList<>();
-        List<Integer> ans = new ArrayList<>();
-
-        HashMap<String, Integer> map = new HashMap<>();
-        map.put("cpp", 0);
-        map.put("java", 1);
-        map.put("python", 2);
-        map.put("backend", 3);
-        map.put("frontend", 4);
-        map.put("junior", 5);
-        map.put("senior", 6);
-        map.put("chicken", 7);
-        map.put("pizza", 8);
-        map.put("-", -1);
-
-        // info 파싱
-        for(String i : info){
-            StringTokenizer st = new StringTokenizer(i, " ");
-            list.add(new Info(map.get(st.nextToken()),map.get(st.nextToken()),map.get(st.nextToken()),map.get(st.nextToken()),Integer.parseInt(st.nextToken())));
-        }
-
-        // query 파싱
-        for (String q : query){
-            StringTokenizer st = new StringTokenizer(q, " ");
-            int lang = map.get(st.nextToken());
-            st.nextToken();
-            int job = map.get(st.nextToken());
-            st.nextToken();
-            int career = map.get(st.nextToken());
-            st.nextToken();
-            int food = map.get(st.nextToken());
-            int score = Integer.parseInt(st.nextToken());
-
-            int cnt=0;
-            for(Info i : list){
-                if (lang<0 || lang==i.lang){
-                    if (job<0 || job==i.job){
-                        if (career<0 || career==i.career){
-                            if (food<0 || food==i.food){
-                                if (i.score >= score){
-                                    cnt++;
-                                }
-                            }
-                        }
-                    }
-                }
-//                if (lang.equals("-") || lang.equals(i.lang)){
-//                    if (job.equals("-") || job.equals(i.job)){
-//                        if (career.equals("-") || career.equals(i.career)){
-//                            if (food.equals("-") || food.equals(i.food)){
-//                                if (i.score >= score){
-//                                    cnt++;
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-            }
-            ans.add(cnt);
-        }
-
-        int[] answer = new int[ans.size()];
-        for (int i = 0; i < ans.size(); i++) {
-            answer[i] = ans.get(i);
-        }
-
-        return answer;
+    	map = new HashMap<>();
+    	
+    	// 주어진 info로 만들 수 있는 모든 경우를 키로 가지는 map 생성
+    	for (int i = 0; i < info.length; i++) {
+    		dfs("",info[i].split(" "),0);
+		}
+    	
+    	// map에 담긴 리스트들 모두 정렬
+    	for (List<Integer> m : map.values()) {
+    		m.sort((a,b)->{
+    			return a-b;
+    		});
+		}
+    	
+    	// 쿼리 파싱
+    	List<Integer> list = new ArrayList<>();
+    	for (int i = 0; i < query.length; i++) {
+			String[] q = query[i].replaceAll(" and ", " ").split(" ");
+			StringBuilder sb = new StringBuilder();
+			for (int j = 0; j < 4; j++) {
+				sb.append(q[j]);
+			}
+			String key = sb.toString();
+			int score = Integer.parseInt(q[4]);
+			
+			List<Integer> result = map.getOrDefault(key, new ArrayList<>());
+			
+			// 이분탐색으로 score보다 큰 index 찾기
+			int start=0;
+			int end=result.size()-1;
+			while(true) {
+				if(start > end) break;
+				int mid = (start + end)/2;
+				if(score > result.get(mid)) {
+					start = mid+1;
+				} else {
+					end = mid-1;
+				}
+			}
+			
+			list.add(result.size()-start);
+		}
+    	
+    	int[] answer = new int[list.size()];
+    	for (int i = 0; i < list.size(); i++) {
+			answer[i]=list.get(i);
+		}
+    	
+    	return answer;
     }
 
-    public static void main(String[] args) throws Exception{
+    private void dfs(String str, String[] ary, int k) {
+		if(k==4) {
+			int value = Integer.parseInt(ary[4]);
+			if (map.containsKey(str)) {
+				map.get(str).add(value);
+			} else {
+				List<Integer> list = new ArrayList<>();
+				list.add(value);
+				map.put(str, list);
+			}
+			return;
+		}
+		dfs(str+"-",ary,k+1);
+		dfs(str+ary[k],ary,k+1);
+	}
+
+	public static void main(String[] args) throws Exception{
         순위_검색 c = new 순위_검색();
 
         String[] info = {"java backend junior pizza 150","python frontend senior chicken 210","python frontend senior chicken 150","cpp backend senior pizza 260","java backend junior chicken 80","python backend senior chicken 50"};
