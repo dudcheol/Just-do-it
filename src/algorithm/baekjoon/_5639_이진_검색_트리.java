@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 public class _5639_이진_검색_트리 {
+	
 	private static StringBuilder sb;
 	
 	private static class Node{
