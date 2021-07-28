@@ -41,10 +41,8 @@ public class _1967_트리의_지름 {
 		
 		// 각 노드별 리프노드까지 갔을 때 최대 길이 구하기
 		memo = new int[N+1];
-		memo[1] = dfs(1);
+		dfs(1);
 		
-		System.out.println(Arrays.toString(memo));
-			
 		int max=0;
 		for (int i = 1; i <= N; i++) {
 			max=Math.max(max, memo[i]);
