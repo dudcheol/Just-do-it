@@ -14,9 +14,10 @@ function solution(answers) {
         if (answer === three[i % 10]) info[2].value++;
     });
 
-    info.sort((o1, o2) => o2.value - o1.value);
+    // info.sort((o1, o2) => o2.value - o1.value);
+    // const max = info[0].value;
 
-    const max = info[0].value;
+    const max = Math.max(info[0].value, info[1].value, info[2].value);
     const answer = info.filter((e) => e.value === max).map((e) => e.id);
 
     return answer;
